@@ -18,17 +18,17 @@ import java.util.Set;
         "dissapointinglyannotated.simple.ಠ_ಠ",
         "dissapointinglyannotated.simple.ಥ_ಥ"
 })
-public class DissapointinglyAnnotatedProcessor extends AbstractProcessor{
+public class DissapointinglyAnnotatedProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Messager output = processingEnv.getMessager();
 
-        for (TypeElement annot: annotations){
+        for (TypeElement annot : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(annot)) {
                 if (annot.getSimpleName().contentEquals("Костыль"))
-                    output.printMessage(Diagnostic.Kind.NOTE, e.toString()+ " is Костыль infected");
+                    output.printMessage(Diagnostic.Kind.NOTE, getElementName(e) + " is Костыль infected");
                 else
-                    output.printMessage(Diagnostic.Kind.NOTE, e.toString()+ " made me roll eyes like this: "+ annot.getSimpleName());
+                    output.printMessage(Diagnostic.Kind.NOTE, getElementName(e) + " made me roll eyes like this: " + annot.getSimpleName());
             }
         }
         return true;
@@ -38,4 +38,13 @@ public class DissapointinglyAnnotatedProcessor extends AbstractProcessor{
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
     }
+
+    private static String getElementName(Element e) {
+        if (e.getKind().equals(ElementKind.METHOD)) {
+            return e.getEnclosingElement().asType().toString() + "." + e.getSimpleName();
+        }
+        return e.toString();
+    }
+
 }
+
